@@ -5,27 +5,14 @@
           <el-button type="primary"  @click="$router.push('/questions/new')">新增试题</el-button>
           <el-button type="primary">批量导入</el-button>
         </el-row>
-        <!-- <el-form :model="formData" ref="myForm" inline label-width="80px">
-            <el-form-item label="学科" prop="subjectID">
-           <el-select v-model="formData.subjectID">
-              <el-option
-                v-for="item in subjects"
-                :key="item.value"
-                :value="item.value"
-                :label="item.label"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form> -->
-
         <div class="el-card_body" style="margin-top:20px">
           <form class="el-form el-form--inline">
-            <!-- <div class="el-form-item"> -->
+         
               <label for="subjectID" class="el-form-item__label" style="width: 80px;">学科</label>
               <el-select v-model="formData.subjectID">
                 <el-option v-for="item in subjects" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
-            <!-- </div> -->
+            
             <div class="el-form-item">
               <label for="subjectID" class="el-form-item__label" style="width: 80px;">难度</label>
               <el-select v-model="formData.difficulty">
@@ -92,7 +79,7 @@
                <el-button @click="search" type="primary">搜索</el-button>
             </el-row>
           
-            <el-table :data="tableData" width="100%"> 
+            <el-table :data="list" width="100%"> 
               <el-table-column prop="id" label="序号" width="70px"></el-table-column>
               <el-table-column prop="number" label="试题编号"></el-table-column>
               <el-table-column prop="subjectID" label="学科" :formatter="subjectFormatter" ></el-table-column>
@@ -113,7 +100,7 @@
                 </template>
               </el-table-column>
             </el-table>
-        <!-- 分页 -->
+          <!-- 分页 -->
             <el-row type='flex' justify="end" align="middle" style="height:60px">
                 <el-pagination  background layout="prev, pager, next" 
                 :total="page.total" 
@@ -122,14 +109,45 @@
                 @current-change="changePage">
                 </el-pagination>
             </el-row> 
+          <!-- 分页结束 -->
+          <!-- 弹窗部分 el-dialog -->
+          <el-dialog :visible="visible" @close="closePreview" title="题目预览">
+            <el-row style="height:40px" type="flex" align="middler">
+              <el-col :span="6">[题库]:面试宝典题库</el-col>
+              <el-col :span="6">[学科]:{{ computedSubject }}</el-col>
+            </el-row>
+            <el-row style="height:40px" type="flex" align="middler">
+              <el-col :span="6">[题型]: {{ computedQuestionType }}</el-col>
+              <el-col :span="6">[编号]: {{ formData.number }}</el-col>
+              <el-col :span="6">[难度]: {{ computedDifficulty }}</el-col>
+              <el-col :span="6">[标签]: {{ formData.tags }}</el-col>
+            </el-row>
+            <el-row style="height:40px" type="flex" align="middler">
+              <el-col :span="6">[目录]: {{ computedDirectory }}</el-col>
+              <el-col :span="6">[企业]: {{ formData.enterpriseID }}</el-col>
+              <el-col :span="6">[方向]: {{ formData.direction }}</el-col>
+              <el-col :span="6">[城市]: {{ formData.province + formData.city }}</el-col>
+            </el-row>
+            <el-row></el-row>
+            <el-row slot="footer" type="flex" justify="end">
+              <el-button type="primary" @click="closePreview">关闭</el-button>
+            </el-row>
+            <el-row v-if="formData.questionType == '1'">
+              <el-radio disabled v-model="item.isRight" :label="1" v-for="(item,index) in formData.options" :key="index">{{ item.title }}</el-radio>
+            </el-row>
+            <el-row v-else-if="formData.questionType == '2'">
+              <el-checkbox disabled v-model="item.isRight" :true-label="1" :false-label="0" v-for="(item,index) in formData.options" :key="index">{{ item.title }}</el-checkbox>
+            </el-row>
+        </el-dialog>
 
-      </div>
+        </div>
     </el-card>       
 
 </template>
 
 <script>
-import {list as questionList,detail,remove} from '../../api/hmmm/questions';
+// import {list as questionList,detail,remove} from '../../api/hmmm/questions';
+import {list,detail,remove} from '../../api/hmmm/questions';
 import {simple as subjectList} from '../../api/hmmm/subjects';
 import {questionType,difficulty,direction} from'../../api/hmmm/constants';
 import { simple as UserList } from "../../api/base/users";
@@ -292,8 +310,8 @@ export default {
       await detail({id: 1});
     },
     async getArticles(){
-     let result =  await questionList();
-    this.tableData = result.data.items;
+     let result =  await list();
+    this.tableData = result.data.items; //这里有问题
     },
     async getUserList() {
       let result = await UserList();
