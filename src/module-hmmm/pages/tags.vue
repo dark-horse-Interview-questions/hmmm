@@ -29,33 +29,56 @@
           <!-- 作用域插槽 -->
           <el-button type="text">修改</el-button>
         <!-- 需要根据状态判断是禁用还是启用 -->
-        <el-button type="text"> {{obj.row.state ? '禁用' : '启用'}}</el-button>
+        <el-button @click="EnableOrDisable(obj.row)" type="text">{{obj.row.state ? '禁用' : '启用'}}</el-button>
         <el-button type="text">删除</el-button>
         </template>
         
       </el-table-column>
 
     </el-table>  
-
+    <el-row type="flex" justify="center" align="middle">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="page.total"
+        :page-size="page.pageSize"
+        :current-page="page.currentPage"
+        @current-change="changepage"
+       >  
+    </el-pagination>
+    </el-row>
+    
   </el-card>
 </template>
 
 <script>
 import {list as getlist} from "../../api/hmmm/tags"
-// import {simple} from "../../api/hmmm/tags"
+ import {removeState} from "../../api/hmmm/tags"
 export default {
   // name: 'TagsList',
   data() {
     return {
-      list:{}
+      list:[],
+      page:{
+        total:0,
+        pageSize:10,
+        currentPage:1
+      }
      
     }
   },
   methods:{
-    async  gettagslist(){
-      let result= await getlist()
+    changepage(newPage){
+      this.page.currentPage = newPage
+       this.gettagslist()
+    },
+
+    async gettagslist() {
+      let result= await getlist( {page: this.page.currentPage,
+        per_page: this.page.pageSize})
       this.list=result.data.items
-    
+      
+      this.page.total = result.data.counts// 总条数
     },
     //定义一个格式化的函数
     formatterBoolean(row,column,cellValue,index){
@@ -65,7 +88,16 @@ export default {
       //index索引
       return cellValue ? '启用' : '禁用'
 
-    }
+    },
+    //启用或者禁用标签的方法
+    EnableOrDisable(row){
+      let mess = row.state ? '禁用' :'启用'
+        this.$confirm(`您是否确定要${mess}状态吗`, '提示').then(() => {
+           removeState({id:row.id,state:!row.state}).then(result => {
+            this.gettagslist()  
+           })
+        })
+      }
   },
   created(){
    this.gettagslist()
