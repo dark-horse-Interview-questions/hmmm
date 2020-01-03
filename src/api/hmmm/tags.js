@@ -10,7 +10,7 @@
 import { createAPI } from '@/utils/request'
 
 // 标签列表
-export const list = data => createAPI('/tags', 'get', data)
+export const list = data => createAPI('/tags', 'get', data)//完成
 
 // 标签简单列表
 export const simple = data => createAPI('/tags/simple', 'get', data)
@@ -25,9 +25,9 @@ export const add = data => createAPI(`/tags`, 'post', data)
 export const update = data => createAPI(`/tags/${data.id}`, 'put', data)
 
 // 标签删除
-export const remove = data => createAPI(`/tags/${data.id}`, 'delete', data)
+export const remove = data => createAPI(`/tags/${data.id}`, 'delete', data)//完成
 
 // 标签状态
-export const removeState = data => createAPI(`/tags/${data.id}/${data.state}`, 'post', data)
+export const removeState = data => createAPI(`/tags/${data.id}/${data.state}`, 'post', data)//完成
 
 // removeState({id,state})   如果参数对了   刷新页面没有更新   接口问题。
