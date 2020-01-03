@@ -97,7 +97,7 @@
     </el-form-item>
 
     <el-form-item label="是否前台显示" prop="isFrontDisplay">
-    <el-switch v-model="formData.isFrontDisplay"></el-switch>
+    <el-switch v-model="formData.isFrontDisplay" :active-value='1' :inactive-value='0'></el-switch>
   </el-form-item>
   </el-form>
   <span slot="footer" class="dialog-footer">
@@ -166,7 +166,6 @@ export default {
     //点击新增学科
     async addVisible() {
       await this.$refs.ruleForm.validate()
-      alert(this.formData.id)
       this.formData.id ? await update(this.formData) : await add(this.formData)
         this.dialogVisible=false
           this.formData={
@@ -225,9 +224,11 @@ export default {
         page: this.page.currentPage,
         pagesize: this.page.pageSize,
         ...data
+        
       }).then(res=>{
         this.list=res.data.items
         this.page.counts = res.data.counts
+        console.log(data);
       })
     },
     //布尔值的判断
