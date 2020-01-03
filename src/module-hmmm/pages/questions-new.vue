@@ -305,6 +305,7 @@ export default {
     },
     'formData.city'(newVal){
     // this.formData.province = '请选择'
+    
     this.provinces = getAllRegion(newVal)
     },
     clickNum(newVal){
