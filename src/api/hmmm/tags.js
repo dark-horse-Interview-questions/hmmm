@@ -13,16 +13,16 @@ import { createAPI } from '@/utils/request'
 export const list = data => createAPI('/tags', 'get', data)//完成
 
 // 标签简单列表
-export const simple = data => createAPI('/tags/simple', 'get', data)
+export const simple = data => createAPI('/tags/simple', 'get', data)//完成
 
 // 标签详情
-export const detail = data => createAPI(`/tags/${data.id}`, 'get', data)
+export const detail = data => createAPI(`/tags/${data.id}`, 'get', data)//完成
 
 // 标签添加
-export const add = data => createAPI(`/tags`, 'post', data)
+export const add = data => createAPI(`/tags`, 'post', data)//完成
 
 // 标签修改
-export const update = data => createAPI(`/tags/${data.id}`, 'put', data)
+export const update = data => createAPI(`/tags/${data.id}`, 'put', data)//完成
 
 // 标签删除
 export const remove = data => createAPI(`/tags/${data.id}`, 'delete', data)//完成
