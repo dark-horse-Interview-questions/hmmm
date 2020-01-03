@@ -6,8 +6,7 @@
           <el-button type="primary">批量导入</el-button>
         </el-row>
         <div class="el-card_body" style="margin-top:20px">
-          <form class="el-form el-form--inline">
-         
+          <el-form :model="formData" ref="myForm" inline label-width="80px">
               <label for="subjectID" class="el-form-item__label" style="width: 80px;">学科</label>
               <el-select v-model="formData.subjectID">
                 <el-option v-for="item in subjects" :key="item.value" :label="item.label" :value="item.value"> </el-option>
@@ -73,12 +72,12 @@
                   <el-option v-for="(item) in directioy" :key="item.id" :value="item.value" :label="item.label"></el-option>
                 </el-select>
               </div>
-          </form>
-            <el-row type="flex" justify="center" style="margin: 20px 0">
-               <el-button @click="clear">清除</el-button>
-               <el-button @click="search" type="primary">搜索</el-button>
-            </el-row>
-          
+            </el-form>
+              <el-row type="flex" justify="center" style="margin: 20px 0">
+                 <el-button @click="clear">清除</el-button>
+                 <el-button @click="search" type="primary">搜索</el-button>
+              </el-row>
+            
             <el-table :data="list" width="100%"> 
               <el-table-column prop="id" label="序号" width="70px"></el-table-column>
               <el-table-column prop="number" label="试题编号"></el-table-column>
@@ -146,16 +145,16 @@
 </template>
 
 <script>
-// import {list as questionList,detail,remove} from '../../api/hmmm/questions';
-import {list,detail,remove} from '../../api/hmmm/questions';
-import {simple as subjectList} from '../../api/hmmm/subjects';
-import {questionType,difficulty,direction} from'../../api/hmmm/constants';
-import { simple as UserList } from "../../api/base/users";
-import { simple as directioy } from "../../api/hmmm/directorys";
-import { simple as TagList } from "../../api/hmmm/tags";
-import { citys, provinces } from "../../api/hmmm/citys";
-export default {
-  data() {
+    // import {list as questionList,detail,remove} from '../../api/hmmm/questions';
+    import {list,detail,remove} from '../../api/hmmm/questions';
+    import {simple as subjectList} from '../../api/hmmm/subjects';
+    import {questionType,difficulty,direction} from'../../api/hmmm/constants';
+    import { simple as UserList } from "../../api/base/users";
+    import { simple as directioy } from "../../api/hmmm/directorys";
+    import { simple as TagList } from "../../api/hmmm/tags";
+    import { citys, provinces } from "../../api/hmmm/citys";
+    export default {
+    data() {
     return{
       visible:false,
       list: [],
@@ -182,7 +181,8 @@ export default {
         shortName: null,
         direction: null,
         creatorID: null,
-        catalogID: null
+        catalogID: null,
+        tableData:null
       },
       page: {
         currentPage: 1,
@@ -190,8 +190,8 @@ export default {
         total: 0
       }
     };
-  },
-  computed: {
+    },
+    computed: {
     myCitys() {
       return citys(this.formData.province);
     },
@@ -222,7 +222,7 @@ export default {
       return result && result.length ? result[0].label : "未知";
     }
   },
-  methods:{
+    methods:{
     closePreview() {
       this.formData = {
         difficulty: null,
@@ -284,11 +284,10 @@ export default {
       return result.length ? result[0].label : "未知";
     },
     search() {
-      this.page.currentPage = 1;
-      this.getCondition();
+    
     },
     clear() {
-      this.$refs.myForm.resetFields();
+      this.closePreview();
     },
 
 
@@ -321,19 +320,19 @@ export default {
       let result = await directioy();
       this.directioy = result.data;
     } 
-  },
-  created(){
+    },
+    created(){
     this.getArticles();
     this.getSubject();
     this.getTags();
     this.getDirectioy();
     this.getUserList();
     this.getQuestion();
-  }
-};
+    }
+  };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .el-card_body{
     input{
       border:1px solid #ebeef5;
