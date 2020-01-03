@@ -240,6 +240,19 @@
       };
       this.visible = false;
     },
+       getCondition() {
+      let params = {
+        page: this.page.currentPage,
+        pageSize: this.page.pageSize,
+        ...this.formData
+      };
+      this.getQuestion(params);
+    },
+    changePage(newPage) {
+      this.page.currentPage = newPage;
+      this.getCondition();
+    },
+   
     // 预览内容
     async previewId(id) {
       let result = await detail({ id });
@@ -259,18 +272,7 @@
     async joinItem(id) {
       await this.$confirm("是否加入精选");
     },
-    changePage(newPage) {
-      this.page.currentPage = newPage;
-      this.getCondition();
-    },
-    getCondition() {
-      let params = {
-        page: this.page.currentPage,
-        pageSize: this.page.pageSize,
-        ...this.formData
-      };
-      this.getQuestion(params);
-    },
+  
     questionFormatter(row, column, cellValue) {
       let result = this.questionType.filter(item => item.value == cellValue);
       return result.length ? result[0].label : "未知";
@@ -284,14 +286,12 @@
       return result.length ? result[0].label : "未知";
     },
     search() {
-    
+      // this.page.currentPage = 1;
+      // this.getCondition();
     },
     clear() {
       this.closePreview();
     },
-
-
-
     async getSubject() {
       let result=await  subjectList();
       this.subjects = result.data;
@@ -320,8 +320,8 @@
       let result = await directioy();
       this.directioy = result.data;
     } 
-    },
-    created(){
+  },
+  created(){
     this.getArticles();
     this.getSubject();
     this.getTags();
